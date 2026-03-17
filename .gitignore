@@ -1,0 +1,33 @@
+# 環境変数 (シークレット)
+.env
+
+# 学習出力
+outputs/
+data/
+*.pt
+*.safetensors
+
+# LeRobot キャッシュ
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Terraform
+gcp/.terraform/
+gcp/*.tfstate
+gcp/*.tfstate.backup
+gcp/.terraform.lock.hcl
+
+# W&B
+wandb/
