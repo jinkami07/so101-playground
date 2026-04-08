@@ -1,7 +1,7 @@
 #!/bin/bash
 # SO-101 キャリブレーション手順
 # 実行: bash setup/03_calibrate.sh
-# 前提: conda activate so101 済み / .env を読み込み済み
+# 前提: source .venv/bin/activate 済み / .env を読み込み済み
 
 set -e
 source "$(dirname "$0")/../.env" 2>/dev/null || {

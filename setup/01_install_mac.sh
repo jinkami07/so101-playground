@@ -6,39 +6,43 @@ set -e
 
 echo "=== LeRobot セットアップ開始 (Mac M-series) ==="
 
-# 1. conda環境の作成
-echo "[1/5] conda環境 'so101' を作成..."
-conda create -y -n so101 python=3.12
+# 1. uv確認
+echo "[1/5] uv を確認..."
+if ! command -v uv &>/dev/null; then
+    echo "  uv が見つかりません。インストールします..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    source "$HOME/.local/bin/env"
+fi
 
-# conda activate はサブシェルでは効かないため eval で初期化
-eval "$(conda shell.bash hook)"
-conda activate so101
+# 2. venv作成
+echo "[2/5] venv '.venv' を作成..."
+uv venv --python 3.12
+source .venv/bin/activate
 
-# 2. ffmpegのインストール (conda-forgeから)
-echo "[2/5] ffmpeg 7.1.1 をインストール..."
-conda install -y ffmpeg=7.1.1 -c conda-forge
+# 3. ffmpegのインストール (Homebrew)
+echo "[3/5] ffmpeg をインストール..."
+if ! command -v ffmpeg &>/dev/null; then
+    brew install ffmpeg
+else
+    echo "  ffmpeg は既にインストール済み"
+fi
 
-# 3. LeRobotのクローン & インストール
-echo "[3/5] LeRobotをクローン & インストール..."
+# 4. LeRobotのクローン & インストール
+echo "[4/5] LeRobotをクローン & インストール..."
 if [ ! -d "lerobot" ]; then
     git clone https://github.com/huggingface/lerobot.git lerobot
 fi
 cd lerobot
-pip install -e ".[feetech,smolvla]"
+uv pip install -e ".[feetech,smolvla]"
 cd ..
 
-# 4. HuggingFace CLI ログイン
-echo "[4/5] HuggingFace にログイン..."
+# 5. HuggingFace CLI ログイン
+echo "[5/5] HuggingFace にログイン..."
 echo "  → ブラウザでトークンを取得: https://huggingface.co/settings/tokens"
-huggingface-cli login
-
-# 5. 動作確認
-echo "[5/5] インストール確認..."
-python -c "import lerobot; print(f'LeRobot version: {lerobot.__version__}')"
-lerobot-find-port --help > /dev/null 2>&1 && echo "lerobot-find-port: OK" || echo "lerobot-find-port: コマンド確認失敗 (要調査)"
+.venv/bin/hf login
 
 echo ""
 echo "=== セットアップ完了 ==="
 echo "次のステップ:"
-echo "  conda activate so101"
+echo "  source .venv/bin/activate"
 echo "  bash setup/02_find_hardware.sh  # ハードウェア接続確認"

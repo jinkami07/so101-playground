@@ -1,7 +1,7 @@
 #!/bin/bash
 # SO-101 ポート & カメラ発見スクリプト
 # 実行: bash setup/02_find_hardware.sh
-# 前提: conda activate so101 済み
+# 前提: source .venv/bin/activate 済み
 
 echo "=== SO-101 ハードウェア確認 ==="
 echo ""
